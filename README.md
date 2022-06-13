@@ -1,5 +1,7 @@
 # Quick Debug
 
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/gmag11/library/QuickDebug.svg)](https://registry.platformio.org/libraries/gmag11/QuickDebug)
+
 ## Introduction
 ESP32 SDK provides great debugging tools that are missing in ESP8266 SDK.
 
