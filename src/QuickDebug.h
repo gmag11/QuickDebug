@@ -25,6 +25,7 @@
 #include <Arduino.h>
 #ifdef ESP32
 #include <esp_log.h>
+#define DEBUG_LEVEL CORE_DEBUG_LEVEL 
 #endif
 #include <string>
 #include <list>
