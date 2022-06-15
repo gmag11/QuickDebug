@@ -15,6 +15,7 @@ QuickDebug library adds extra information to every line:
 - Colours: It allows you to see the log messages in different colours. By default it uses colours from ESP32 SDK.
 - Tag: It allows you to filter log messages by tag. This is included in native ESP32 log fatures but not in ESP8266.
 - Individual tags debug level may be decreased.
+- If debug level is set to 0 (NONE) then most of library code is disabled so it is not compiled.
 
 For code simplicity, ESP32 and ESP8266 output format are slightly different.
 
