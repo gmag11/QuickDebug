@@ -58,7 +58,6 @@ If you use PlatformIO, you can define debug level in `platformio.ini` file.
 
 ```ini
 [debug]
-[debug]
 none = 0
 error = 1
 warn = 2
