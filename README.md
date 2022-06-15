@@ -58,28 +58,24 @@ If you use PlatformIO, you can define debug level in `platformio.ini` file.
 
 ```ini
 [debug]
-esp32_none = -DCORE_DEBUG_LEVEL=0
-none = -DDEBUG_LEVEL=NONE
-esp32_error = -DCORE_DEBUG_LEVEL=1
-error = -DDEBUG_LEVEL=ERROR
-esp32_warn = -DCORE_DEBUG_LEVEL=2
-warn = -DDEBUG_LEVEL=WARN
-esp32_info = -DCORE_DEBUG_LEVEL=3
-info = -DDEBUG_LEVEL=INFO
-esp32_debug = -DCORE_DEBUG_LEVEL=4
-debug = -DDEBUG_LEVEL=DBG
-esp32_verbose = -DCORE_DEBUG_LEVEL=5
-verbose = -DDEBUG_LEVEL=VERBOSE
+[debug]
+none = 0
+error = 1
+warn = 2
+info = 3
+debug = 4
+verbose = 5
 
-default_level = ${debug.verbose} ; set debug level for esp8266 here
-default_esp32_level = ${debug.esp32_verbose} ; set debug level for esp32 here
+level = ${debug.verbose} ; set debug level here
+
+default_esp32_level = -DCORE_DEBUG_LEVEL=${debug.level}
+default_esp8266_level = -DDEBUG_LEVEL=${debug.level}
 
 [esp32_common]
 platform = espressif32
 board = esp32dev
 framework = arduino
 build_flags =
-    ${debug.default_level} 
     ${debug.default_esp32_level}
     -DCONFIG_ARDUHAL_LOG_COLORS=1 ; enable colours
 monitor_filters = time ; add time information to every serial monitor line
@@ -89,7 +85,7 @@ platform = espressif8266
 board = esp12e
 framework = arduino
 build_flags =
-    ${debug.default_level}
+    ${debug.default_esp8266_level}
     -DCONFIG_ARDUHAL_LOG_COLORS=1 ; enable colours
 monitor_filters = time ; add time information to every serial monitor line
 
