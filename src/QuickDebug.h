@@ -26,6 +26,43 @@
 #ifdef ESP32
 #include <esp_log.h>
 #endif
+#include <string>
+#include <list>
+
+typedef struct {
+    std::string tagName;
+    int level;
+} LogTagDebugLevel_t;
+
+class DebugTagManager {
+
+#if CORE_DEBUG_LEVEL || DEBUG_LEVEL
+
+protected:
+    std::list<LogTagDebugLevel_t> tagLevels;
+
+public:
+    void setTagLevel (const std::string& tagName, int level);
+    void setTagToDefaultLevel (const std::string& tagName);
+    int getTagLevel (const std::string& tagName);
+    std::string getTagLevelStr (const std::string& tagName);
+
+#else
+public:
+    void setTagLevel (...) {}
+    void setTagToDefaultLevel (...) {}
+    int getTagLevel (...) { return NO_DEBUG; }
+    std::string getTagLevelStr (...) { return "NONE"; }
+#endif // CODE_DEBUG_LEVEL > 0
+
+};
+
+extern DebugTagManager debugTagManager;
+
+#define setTagDebugLevel(tagName,level) debugTagManager.setTagLevel(tagName, level)
+#define setTagToDefaultDebugLevel(tagName) debugTagManager.setTagToDefaultLevel(tagName)
+#define getTagDebugLevel(tagName) debugTagManager.getTagLevel(tagName)
+#define getTagDebugLevelStr(tagName) debugTagManager.getTagLevelStr(tagName)
 
 #ifdef ESP8266
 #ifndef CONFIG_ARDUHAL_LOG_COLORS
@@ -76,31 +113,31 @@ const char* extractFileName (const char* path);
 #define DEBUG_LINE_PREFIX(TAG) DEBUG_ESP_PORT.printf(PSTR("[%6lu][H:%5lu][%s:%d] %s(): ["),millis(),(unsigned long)ESP.getFreeHeap(),extractFileName(__FILE__),__LINE__,__FUNCTION__); DEBUG_ESP_PORT.print(TAG); DEBUG_ESP_PORT.print("] ");
 
 #if DEBUG_LEVEL >= VERBOSE
-#define DEBUG_VERBOSE(TAG,text,...) DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_V "V ");DEBUG_LINE_PREFIX(TAG);DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR)
+#define DEBUG_VERBOSE(TAG,text,...) if(debugTagManager.getTagLevel(TAG) >= VERBOSE){DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_V "V ");DEBUG_LINE_PREFIX(TAG);DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR);}
 #else
 #define DEBUG_VERBOSE(...)
 #endif
 
 #if DEBUG_LEVEL >= DBG
-#define DEBUG_DBG(TAG,text,...) DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_D "D ");DEBUG_LINE_PREFIX(TAG); DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR)
+#define DEBUG_DBG(TAG,text,...) if(debugTagManager.getTagLevel(TAG) >= DBG){DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_D "D ");DEBUG_LINE_PREFIX(TAG); DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR);}
 #else
 #define DEBUG_DBG(...)
 #endif
 
 #if DEBUG_LEVEL >= INFO
-#define DEBUG_INFO(TAG,text,...) DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_I "I ");DEBUG_LINE_PREFIX(TAG);DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR)
+#define DEBUG_INFO(TAG,text,...) if(debugTagManager.getTagLevel(TAG) >= INFO){DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_I "I ");DEBUG_LINE_PREFIX(TAG);DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR);}
 #else
 #define DEBUG_INFO(...)
 #endif
 
 #if DEBUG_LEVEL >= WARN
-#define DEBUG_WARN(TAG,text,...) DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_W "W ");DEBUG_LINE_PREFIX(TAG);DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR)
+#define DEBUG_WARN(TAG,text,...) if(debugTagManager.getTagLevel(TAG) >= WARN){DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_W "W ");DEBUG_LINE_PREFIX(TAG);DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR);}
 #else
 #define DEBUG_WARN(...)
 #endif
 
 #if DEBUG_LEVEL >= ERROR
-#define DEBUG_ERROR(TAG,text,...) DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_E "E ");DEBUG_LINE_PREFIX(TAG);DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR)
+#define DEBUG_ERROR(TAG,text,...) if(debugTagManager.getTagLevel(TAG) >= ERROR){DEBUG_ESP_PORT.print(ARDUHAL_LOG_COLOR_E "E ");DEBUG_LINE_PREFIX(TAG);DEBUG_ESP_PORT.printf(PSTR(text),##__VA_ARGS__);DEBUG_ESP_PORT.println(ARDUHAL_LOG_RESET_COLOR);}
 #else
 #define DEBUG_ERROR(...)
 #endif
@@ -116,18 +153,25 @@ const char* extractFileName (const char* path);
 
 
 #elif defined ESP32
-#define DEBUG_VERBOSE(TAG,format,...) ESP_LOGV (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__)
-#define DEBUG_DBG(TAG,format,...) ESP_LOGD (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__)
-#define DEBUG_INFO(TAG,format,...) ESP_LOGI (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__)
-#define DEBUG_WARN(TAG,format,...) ESP_LOGW (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__)
-#define DEBUG_ERROR(TAG,format,...) ESP_LOGE (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__)
-#endif
 
-#define LOG_ERROR_IF_NON_ZERO(TAG,ERROR_CODE,format,...) if (ERROR_CODE != 0){DEBUG_ERROR (TAG, "Code: %d. " format, ERROR_CODE, ##__VA_ARGS__);}
-#define LOG_ERROR_IF_ZERO(TAG,ERROR_CODE,format,...) if (ERROR_CODE == 0){DEBUG_ERROR (TAG, "Code: 0. " format, ##__VA_ARGS__);}
+#define VERBOSE 5
+#define DBG 4
+#define INFO 3
+#define WARN 2
+#define ERROR 1
+#define NONE 0
+
+#define DEBUG_VERBOSE(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= VERBOSE){ESP_LOGV (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__);}
+#define DEBUG_DBG(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= DBG){ESP_LOGD (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__);}
+#define DEBUG_INFO(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= INFO){ESP_LOGI (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__);}
+#define DEBUG_WARN(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= WARN){ESP_LOGW (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__);}
+#define DEBUG_ERROR(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= ERROR){ESP_LOGE (TAG,"[H:%6d] " format, ESP.getFreeHeap(), ##__VA_ARGS__);}
+#endif //ESP32
+
+#define LOG_ERROR_IF_NON_ZERO(TAG,ERROR_CODE,format,...) if(debugTagManager.getTagLevel(TAG) >= ERROR){if(ERROR_CODE != 0){DEBUG_ERROR (TAG, "Code: %d. " format, ERROR_CODE, ##__VA_ARGS__);}}
+#define LOG_ERROR_IF_ZERO(TAG,ERROR_CODE,format,...) if(debugTagManager.getTagLevel(TAG) >= ERROR){if(ERROR_CODE == 0){DEBUG_ERROR (TAG, "Code: 0. " format, ##__VA_ARGS__);}}
 
 #define LOG_IF_CODE(ERROR_LEVEL,TAG,ERROR_CODE,CODE,format,...) if (ERROR_CODE == CODE){DEBUG_ ##ERROR_LEVEL (TAG, "Code: %d. " format, ERROR_CODE, ##__VA_ARGS__);}
-
 
 #endif
 

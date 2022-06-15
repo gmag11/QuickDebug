@@ -1,9 +1,9 @@
 # Quick Debug
 
 ## Introduction
-ESP32 SDK provides great debugging tools that are missing in ESP8266 SDK.
+ESP32 IDF provides great debugging tools that are missing in ESP32 and ESP8266 Arduino cores.
 
-This library tries to mimit ESP32 log output on ESP8266 and adds some useful data to every log message.
+This library tries to mimic ESP32 log output on ESP8266 and adds some useful data to every log message. Besides it allows setting custom log levels to every different debug tag.
 ## Benefits
 QuickDebug library adds extra information to every line:
 
@@ -12,6 +12,7 @@ QuickDebug library adds extra information to every line:
 - Source file name, function name and line number: It shows exactly where every log message comes from.
 - Colours: It allows you to see the log messages in different colours. By default it uses colours from ESP32 SDK.
 - Tag: It allows you to filter log messages by tag. This is included in native ESP32 log fatures but not in ESP8266.
+- Individual tags debug level may be decreased.
 
 For code simplicity, ESP32 and ESP8266 output format are slightly different.
 
@@ -77,8 +78,8 @@ framework = arduino
 build_flags =
     ${debug.default_level} 
     ${debug.default_esp32_level}
-    -DCONFIG_ARDUHAL_LOG_COLORS=1
-monitor_filters = time
+    -DCONFIG_ARDUHAL_LOG_COLORS=1 ; enable colours
+monitor_filters = time ; add time information to every serial monitor line
 
 [esp8266_common]
 platform = espressif8266
@@ -86,8 +87,8 @@ board = esp12e
 framework = arduino
 build_flags =
     ${debug.default_level}
-    -DCONFIG_ARDUHAL_LOG_COLORS=1
-monitor_filters = time
+    -DCONFIG_ARDUHAL_LOG_COLORS=1 ; enable colours
+monitor_filters = time ; add time information to every serial monitor line
 
 [env:esp32_debug]
 extends = esp32_common
