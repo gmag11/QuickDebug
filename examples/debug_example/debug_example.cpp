@@ -30,8 +30,8 @@ void showDebug () {
     Serial.println ();
     LOG_ERROR_IF_NON_ZERO (TAG, giveNumber (-1), "Error messageif non zero");
     LOG_ERROR_IF_ZERO (TAG, giveNumber (0), "Error message if zero");
-    LOG_IF_CODE (WARN, TAG, giveNumber (-1), -1, "Warning message if code");
-    LOG_IF_CODE (ERROR, TAG, giveNumber (-2), -2, "Error message if code");
+    LOG_IF_CODE (WARN, TAG, giveNumber (-1), -1, "Warning message if code is -1");
+    LOG_IF_CODE (ERROR, TAG, giveNumber (-2), -2, "Error message if code is -2");
     Serial.println ();
     setTagDebugLevel (TAG, INFO);
     Serial.printf ("debug levels: %s:%d:%s %s:%d:%s", TAG, getTagDebugLevel (TAG), getTagDebugLevelStr (TAG).c_str (), TAG2, getTagDebugLevel (TAG2), getTagDebugLevelStr (TAG2).c_str ());
