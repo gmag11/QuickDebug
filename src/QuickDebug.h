@@ -162,11 +162,19 @@ const char* extractFileName (const char* path);
 #define ERROR 1
 #define NONE 0
 
+#ifdef GET_TASK_STACK_INFO
 #define DEBUG_VERBOSE(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= VERBOSE){ESP_LOGV (TAG,"[H:%6d][S:%d T:%s] " format, ESP.getFreeHeap(), uxTaskGetStackHighWaterMark(NULL), pcTaskGetName(NULL), ##__VA_ARGS__);}
 #define DEBUG_DBG(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= DBG){ESP_LOGD (TAG,"[H:%6d][S:%d T:%s] " format, ESP.getFreeHeap(), uxTaskGetStackHighWaterMark(NULL), pcTaskGetName(NULL), ##__VA_ARGS__);}
 #define DEBUG_INFO(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= INFO){ESP_LOGI (TAG,"[H:%6d][S:%d T:%s] " format, ESP.getFreeHeap(), uxTaskGetStackHighWaterMark(NULL), pcTaskGetName(NULL), ##__VA_ARGS__);}
 #define DEBUG_WARN(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= WARN){ESP_LOGW (TAG,"[H:%6d][S:%d T:%s] " format, ESP.getFreeHeap(), uxTaskGetStackHighWaterMark(NULL), pcTaskGetName(NULL), ##__VA_ARGS__);}
 #define DEBUG_ERROR(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= ERROR){ESP_LOGE (TAG,"[H:%6d][S:%d T:%s] " format, ESP.getFreeHeap(), uxTaskGetStackHighWaterMark(NULL), pcTaskGetName(NULL), ##__VA_ARGS__);}
+#else
+#define DEBUG_VERBOSE(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= VERBOSE){ESP_LOGV (TAG,"[H:%6d][T:%s] " format, ESP.getFreeHeap(), pcTaskGetName(NULL), ##__VA_ARGS__);}
+#define DEBUG_DBG(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= DBG){ESP_LOGD (TAG,"[H:%6d][T:%s] " format, ESP.getFreeHeap(), pcTaskGetName(NULL), ##__VA_ARGS__);}
+#define DEBUG_INFO(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= INFO){ESP_LOGI (TAG,"[H:%6d][T:%s] " format, ESP.getFreeHeap(), pcTaskGetName(NULL), ##__VA_ARGS__);}
+#define DEBUG_WARN(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= WARN){ESP_LOGW (TAG,"[H:%6d][T:%s] " format, ESP.getFreeHeap(), pcTaskGetName(NULL), ##__VA_ARGS__);}
+#define DEBUG_ERROR(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= ERROR){ESP_LOGE (TAG,"[H:%6d][T:%s] " format, ESP.getFreeHeap(), pcTaskGetName(NULL), ##__VA_ARGS__);}
+#endif // GET_TASK_STACK_INFO
 #endif //ESP32
 
 #define LOG_ERROR_IF_NON_ZERO(TAG,ERROR_CODE,format,...) if(debugTagManager.getTagLevel(TAG) >= ERROR){if(ERROR_CODE != 0){DEBUG_ERROR (TAG, "Code: %d. " format, ERROR_CODE, ##__VA_ARGS__);}}

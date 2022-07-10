@@ -34,7 +34,7 @@ void showDebug () {
     LOG_IF_CODE (ERROR, TAG, giveNumber (-2), -2, "Error message if code is -2");
     Serial.println ();
     setTagDebugLevel (TAG, INFO);
-    Serial.printf ("debug levels: %s:%d:%s %s:%d:%s", TAG, getTagDebugLevel (TAG), getTagDebugLevelStr (TAG).c_str (), TAG2, getTagDebugLevel (TAG2), getTagDebugLevelStr (TAG2).c_str ());
+    Serial.printf ("debug levels: %s:%d:%s %s:%d:%s\n", TAG, getTagDebugLevel (TAG), getTagDebugLevelStr (TAG).c_str (), TAG2, getTagDebugLevel (TAG2), getTagDebugLevelStr (TAG2).c_str ());
 }
 
 void setup () {

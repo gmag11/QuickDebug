@@ -71,7 +71,9 @@ It is recommended to set both macros to the same value.
 
 If you want to enable colours you have to define `CONFIG_ARDUHAL_LOG_COLORS` macro to value 1.
 
-If you use PlatformIO, you can define debug level in `platformio.ini` file.
+To help you finding required stack size for a task you can use `CORE_DEBUG_STACK_SIZE` macro to enable stack high watermark in debug messages. Getting task stack size takes quite a bit of time so it is disabled by default to avoid performance degradation.
+
+If you use PlatformIO, you can define debug level, colours usage and task stack level check in `platformio.ini` file.
 
 ```ini
 [debug]
