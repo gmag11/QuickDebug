@@ -96,6 +96,8 @@ framework = arduino
 build_flags =
     ${debug.default_esp32_level}
     -DCONFIG_ARDUHAL_LOG_COLORS=1 ; enable colours
+    ;-DGET_TASK_STACK_INFO ; Uncomment this to enable task stack usage debugging. Disable it otherwise because getting stack size takes quite long and will degrade performance.
+
 monitor_filters = time ; add time information to every serial monitor line
 
 [esp8266_common]
