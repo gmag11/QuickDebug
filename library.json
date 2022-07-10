@@ -1,7 +1,7 @@
 {
   "name": "QuickDebug",
   "frameworks": "arduino",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "keywords": "debug, esp8266, esp32",
   "platforms": ["espressif32", "espressif8266"],
   "description": "QuickDebug is a library for ESP8266/ESP32 to simplify debugging.",
