@@ -155,12 +155,12 @@ const char* extractFileName (const char* path);
 
 #elif defined ESP32
 
-#define VERBOSE 5
-#define DBG 4
-#define INFO 3
-#define WARN 2
-#define ERROR 1
-#define NONE 0
+// #define VERBOSE 5
+// #define DBG 4
+// #define INFO 3
+// #define WARN 2
+// #define ERROR 1
+// #define NONE 0
 
 #ifdef GET_TASK_STACK_INFO
 #define DEBUG_VERBOSE(TAG,format,...) if(debugTagManager.getTagLevel(TAG) >= VERBOSE){ESP_LOGV (TAG,"[H:%6d][S:%d T:%s] " format, ESP.getFreeHeap(), uxTaskGetStackHighWaterMark(NULL), pcTaskGetName(NULL), ##__VA_ARGS__);}
